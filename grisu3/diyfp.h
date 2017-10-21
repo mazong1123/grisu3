@@ -22,6 +22,11 @@ struct FPDOUBLE
 class DiyFp
 {
 public:
+    DiyFp()
+        : m_f(0), m_e()
+    {
+    }
+
     DiyFp(uint64_t f, int e)
         : m_f(f), m_e(e)
     {
@@ -48,6 +53,16 @@ public:
     int e() const
     {
         return m_e;
+    }
+
+    void SetSignificand(uint64_t f)
+    {
+        m_f = f;
+    }
+
+    void SetExponent(int e)
+    {
+        m_e = e;
     }
 
     void Minus(const DiyFp& rhs);
