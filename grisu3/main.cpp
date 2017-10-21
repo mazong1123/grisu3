@@ -5,8 +5,8 @@ using namespace std;
 
 int main()
 {
-    double value = 19;
-    int count = 17;
+    double value = 12;
+    int count = 3;
     int dec;
     int sign = 0;
     wchar_t digits[51];

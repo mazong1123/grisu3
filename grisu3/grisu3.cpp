@@ -28,9 +28,11 @@ bool Grisu3::Run(double value, int count, int* dec, int* sign, wchar_t* digits)
     int kappa;
     int length;
     bool isSuccess = DigitGen(D, count, digits, &length, &kappa);
-
-    digits[count] = 0;
-    *dec = -decimalExponent + kappa;
+    if (isSuccess)
+    {
+        digits[count] = 0;
+        *dec = length - decimalExponent + kappa;
+    }
 
     return isSuccess;
 }
