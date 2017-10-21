@@ -13,7 +13,7 @@ struct Power
 class Grisu3
 {
 public:
-    static bool Run(double value, int count, int* dec, int* sign, char* digits);
+    static bool Run(double value, int count, int* dec, int* sign, wchar_t* digits);
 private:
     Grisu3();
     Grisu3(const Grisu3&);
@@ -22,9 +22,9 @@ private:
     static int KComp(int e);
     static void CachedPower(int k, DiyFp* cmk, int* decimalExponent);
 
-    static bool DigitGen(DiyFp mp, int count, char* buffer, int* len, int* k);
+    static bool DigitGen(DiyFp mp, int count, wchar_t* buffer, int* len, int* k);
 
-    static bool RoundWeed(char* buffer,
+    static bool RoundWeed(wchar_t* buffer,
         int len,
         uint64_t rest,
         uint64_t tenKappa,

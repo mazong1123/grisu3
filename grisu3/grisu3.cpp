@@ -4,8 +4,18 @@
 // 1/lg(10)
 const double Grisu3::D_1_LOG2_10 = 0.30102999566398114;
 
-bool Grisu3::Run(double value, int count, int* dec, int* sign, char* digits)
+bool Grisu3::Run(double value, int count, int* dec, int* sign, wchar_t* digits)
 {
+    if (value < 0)
+    {
+        value = -value;
+        *sign = 1;
+    }
+    else
+    {
+        *sign = 0;
+    }
+
     DiyFp w = DiyFp::GenerateNormalizedDiyFp(value);
     int mk = KComp(w.e() + DiyFp::SIGNIFICAND_LENGTH);
 
@@ -19,12 +29,13 @@ bool Grisu3::Run(double value, int count, int* dec, int* sign, char* digits)
     int length;
     bool isSuccess = DigitGen(D, count, digits, &length, &kappa);
 
+    digits[count] = 0;
     *dec = -decimalExponent + kappa;
 
     return isSuccess;
 }
 
-bool Grisu3::RoundWeed(char* buffer,
+bool Grisu3::RoundWeed(wchar_t* buffer,
     int len,
     uint64_t rest,
     uint64_t tenKappa,
@@ -55,12 +66,12 @@ bool Grisu3::RoundWeed(char* buffer,
         buffer[len - 1]++;
         for (int i = len - 1; i > 0; --i)
         {
-            if (buffer[i] != '0' + 10)
+            if (buffer[i] != L'0' + 10)
             {
                 break;
             }
 
-            buffer[i] = '0';
+            buffer[i] = L'0';
             buffer[i - 1]++;
         }
 
@@ -68,9 +79,9 @@ bool Grisu3::RoundWeed(char* buffer,
         // exception of the first digit all digits are now '0'. Simply switch the
         // first digit to '1' and adjust the kappa. Example: "99" becomes "10" and
         // the power (the kappa) is increased.
-        if (buffer[0] == '0' + 10)
+        if (buffer[0] == L'0' + 10)
         {
-            buffer[0] = '1';
+            buffer[0] = L'1';
             (*kappa) += 1;
         }
 
@@ -80,7 +91,7 @@ bool Grisu3::RoundWeed(char* buffer,
     return false;
 }
 
-bool Grisu3::DigitGen(DiyFp mp, int count, char* buffer, int* len, int* K)
+bool Grisu3::DigitGen(DiyFp mp, int count, wchar_t* buffer, int* len, int* K)
 {
     assert(mp.e() >= ALPHA && mp.e() <= GAMA);
 
@@ -96,12 +107,11 @@ bool Grisu3::DigitGen(DiyFp mp, int count, char* buffer, int* len, int* K)
     while (kappa > 0)
     {
         int d = p1 / div;
-
-        // d and len cannot be zero at the same time.
-        assert(d != 0 || length != 0);
-
-        buffer[length++] = '0' + d;
-        --count;
+        if (d != 0 || length != 0)
+        {
+            buffer[length++] = L'0' + d;
+            --count;
+        }
 
         p1 %= div;
         --kappa;
@@ -134,12 +144,11 @@ bool Grisu3::DigitGen(DiyFp mp, int count, char* buffer, int* len, int* K)
         p2 *= 10;
 
         int d = static_cast<int>(p2 >> -one.e());
-
-        // d and len cannot be zero at the same time.
-        assert(d != 0 || length != 0);
-
-        buffer[length++] = '0' + d;
-        --count;
+        if (d != 0 || length != 0)
+        {
+            buffer[length++] = L'0' + d;
+            --count;
+        }
 
         p2 &= one.f() - 1;
         --kappa;
